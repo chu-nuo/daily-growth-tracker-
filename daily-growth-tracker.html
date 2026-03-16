@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日成长打卡 - 2026春季学期</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .sync-status.online::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .today-schedule {
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+
+        .course-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .course-time {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .course-location {
+            font-size: 12px;
+            color: #999;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .free-time {
+            background: #dcfce7;
+            color: #166534;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .recommendation {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .recommendation h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .recommendation ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendation li {
+            padding: 8px 0;
+            color: #78350f;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .recommendation li::before {
+            content: "💡";
+        }
+
+        .calendar-section {
+            margin-top: 20px;
+        }
+
+        .week-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .week-nav button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .week-nav button:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        .calendar-header {
+            font-weight: 600;
+            color: #666;
+            font-size: 12px;
+            padding: 10px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .calendar-day.has-class::after {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background: #f59e0b;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 4px;
+        }
+
+        .calendar-day.today.has-class::after {
+            background: white;
+        }
+
+        /* 待办事项区域 */
+        .todo-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .todo-input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .todo-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .todo-input:focus {
+            border-color: #667eea;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .todo-list {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .todo-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .todo-list::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .todo-item:hover {
+            border-color: #667eea30;
+            transform: translateX(4px);
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+            background: #f3f4f6;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .todo-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .todo-checkbox:hover {
+            background: #667eea20;
+        }
+
+        .todo-checkbox.checked {
+            background: #667eea;
+            color: white;
+        }
+
+        .todo-content {
+            flex: 1;
+        }
+
+        .todo-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .todo-tag {
+            display: inline-block;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .tag-intern {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .tag-driving {
+            background: #fce7f3;
+            color: #9d174d;
+        }
+
+        .tag-homework {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .tag-other {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .todo-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 每日成长打卡</h1>
+            <div class="header-info">
+                <span class="badge" id="currentWeek">第17周</span>
+                <span id="currentModule">互联网+品牌形象设计</span>
+                <span class="sync-status online" id="syncStatus">云端同步已开启</span>
+                <span style="margin-left: auto; font-size: 12px; color: #999;">
+                    💡 提示：新建待办自动置顶，手机电脑实时同步
+                </span>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="left-panel">
+                <!-- 今日概览 -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>📍</span>
+                        <span id="todayTitle">今日概览（3月16日 周一）</span>
+                    </div>
+
+                    <div class="today-schedule" id="todaySchedule">
+                        <!-- 动态生成今日课程 -->
+                    </div>
+
+                    <div class="recommendation" id="recommendation">
+                        <h3>🎯 今日建议安排</h3>
+                        <ul id="recommendationList">
+                            <!-- 动态生成建议 -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 日历视图 -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>📆</span>
+                        <span>学期日历</span>
+                    </div>
+                    <div class="week-nav">
+                        <button onclick="changeWeek(-1)">← 上周</button>
+                        <span id="weekDisplay" style="font-weight: 600;">第3周</span>
+                        <button onclick="changeWeek(1)">下周 →</button>
+                    </div>
+                    <div class="calendar-grid" id="calendar">
+                        <!-- 动态生成日历 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 待办事项 -->
+            <div class="todo-section">
+                <div class="card-title">
+                    <span>✅</span>
+                    <span>待办任务</span>
+                </div>
+
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalCount">0</div>
+                        <div class="stat-label">总计</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="pendingCount">0</div>
+                        <div class="stat-label">待办</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="completedCount">0</div>
+                        <div class="stat-label">已完成</div>
+                    </div>
+                </div>
+
+                <div class="todo-input-area">
+                    <input type="text" class="todo-input" id="todoInput" placeholder="添加新的待办事项...（按回车添加）">
+                    <button class="add-btn" onclick="addTodoFromInput()">添加</button>
+                </div>
+
+                <div class="todo-list" id="todoList">
+                    <div class="loading">
+                        <div class="pulse">正在同步云端数据...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== Supabase 配置 ====================
+        const SUPABASE_URL = 'https://pafifzxspxzxrvaywfg.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhZmlmenhzcHJ6eHJ2YXl3cmZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2MzYyMzYsImV4cCI6MjA4OTIxMjIzNn0.O_v6dUL88kuqibmgobfyW5nEzuBMVsy2H3pGLG2iqkg';
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 用户ID（用于跨设备同步，可改为固定值让所有设备共享）
+        let userId = localStorage.getItem('todo_user_id');
+        if (!userId) {
+            userId = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('todo_user_id', userId);
+        }
+
+        // ==================== 课表数据 ====================
+        const semesterStartDate = new Date('2026-03-02'); // 学期开始日期
+        const totalWeeks = 17;
+
+        const scheduleData = [
+            { week: 1, module: "UI设计", location: "老上善A306", dates: ["03-02","03-03","03-04","03-06"], days: ["周一","周二","周三","周五"], name: "专题设计14-9(UI设计)", teacher: "刘畅/耿立新" },
+            { week: 2, module: "UI设计", location: "老上善A306", dates: ["03-09","03-10","03-13"], days: ["周一","周二","周五"], name: "专题设计14-9(UI设计)", teacher: "刘畅" },
+            { week: 3, module: "UI设计", location: "老上善A306", dates: ["03-16","03-20"], days: ["周一","周五"], name: "专题设计14-9(UI设计)", teacher: "刘畅/耿立新" },
+            { week: 4, module: "专业考察", location: "老上善A306", dates: ["03-23","03-24","03-25","03-27"], days: ["周一","周一","周三","周五"], name: "专题设计14-11(专业考察)", teacher: "孙辉", extra: "形势与政策" },
+            { week: 5, module: "专业考察", location: "老上善A306", dates: ["03-30","03-31","04-01","04-03"], days: ["周一","周二","周三","周五"], name: "专题设计14-11(专业考察)", teacher: "孙辉", extra: "形势与政策" },
+            { week: 6, module: "专业考察", location: "老上善A306", dates: ["04-06","04-10"], days: ["周一","周五"], name: "专题设计14-11(专业考察)", teacher: "孙辉" },
+            { week: 7, module: "考察拓展研究", location: "老上善A306", dates: ["04-13","04-17"], days: ["周一","周五"], name: "专题设计14-12(考察拓展研究)", teacher: "张翠华" },
+            { week: 8, module: "考察拓展研究", location: "老上善A306", dates: ["04-20","04-24"], days: ["周一","周五"], name: "专题设计14-12(考察拓展研究)", teacher: "张翠华" },
+            { week: 9, module: "考察拓展研究", location: "老上善A306", dates: ["04-27","05-01"], days: ["周一","周五"], name: "专题设计14-12(考察拓展研究)", teacher: "张翠华" },
+            { week: 10, module: "考察拓展研究", location: "老上善A306", dates: ["05-04","05-08"], days: ["周一","周五"], name: "专题设计14-12(考察拓展研究)", teacher: "张翠华" },
+            { week: 11, module: "交互与体验设计", location: "老上善A306", dates: ["05-11","05-13","05-15"], days: ["周一","周三","周五"], name: "专题设计14-13(交互与体验设计)", teacher: "高原" },
+            { week: 12, module: "交互与体验设计", location: "老上善A306", dates: ["05-18","05-20","05-22"], days: ["周一","周三","周五"], name: "专题设计14-13(交互与体验设计)", teacher: "高原" },
+            { week: 13, module: "交互与体验设计", location: "老上善A306", dates: ["05-25","05-27","05-29"], days: ["周一","周三","周五"], name: "专题设计14-13(交互与体验设计)", teacher: "高原" },
+            { week: 14, module: "交互与体验设计", location: "老上善A306", dates: ["06-01","06-03","06-05"], days: ["周一","周三","周五"], name: "专题设计14-13(交互与体验设计)", teacher: "高原" },
+            { week: 15, module: "互联网+品牌形象设计", location: "老上善A306", dates: ["06-08","06-10","06-12"], days: ["周一","周三","周五"], name: "专题设计14-6(互联网+品牌形象设计)", teacher: "高原/李海亭" },
+            { week: 16, module: "互联网+品牌形象设计", location: "老上善A306", dates: ["06-15","06-17","06-19"], days: ["周一","周三","周五"], name: "专题设计14-6(互联网+品牌形象设计)", teacher: "高原/李海亭" },
+            { week: 17, module: "互联网+品牌形象设计", location: "老上善A306", dates: ["06-22","06-24","06-26"], days: ["周一","周三","周五"], name: "专题设计14-6(互联网+品牌形象设计)", teacher: "高原/李海亭" }
+        ];
+
+        // ==================== 状态管理 ====================
+        let todos = [];
+        let currentWeekOffset = 0; // 日历显示偏移
+        let today = new Date('2026-03-16'); // 假设今天是3月16日（第3周周一）
+
+        // ==================== 日期工具函数 ====================
+        function getWeekNumber(date) {
+            const diff = date - semesterStartDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            return Math.floor(days / 7) + 1;
+        }
+
+        function formatDate(date) {
+            const m = date.getMonth() + 1;
+            const d = date.getDate();
+            return `${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
+        }
+
+        function getDayName(date) {
+            const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            return days[date.getDay()];
+        }
+
+        // ==================== 待办事项功能（Supabase版）====================
+        async function loadTodos() {
+            const { data, error } = await supabase
+                .from('todo')
+                .select('*')
+                .eq('user_id', userId)
+                .order('created_at', { ascending: false }); // 新的在前
+
+            if (error) {
+                console.error('加载失败:', error);
+                document.getElementById('todoList').innerHTML = 
+                    '<div class="empty-state"><div class="empty-state-icon">⚠️</div>同步失败，请刷新重试</div>';
+                return;
+            }
+
+            if (data) {
+                todos = data;
+                renderTodos();
+            }
+        }
+
+        async function addTodo(title, tag = 'other') {
+            if (!title.trim()) return;
+
+            const newTodo = {
+                title: title.trim(),
+                completed: false,
+                user_id: userId,
+                tag: tag,
+                created_at: new Date().toISOString()
+            };
+
+            const { data, error } = await supabase
+                .from('todo')
+                .insert([newTodo])
+                .select();
+
+            if (error) {
+                console.error('添加失败:', error);
+                alert('添加失败，请检查网络');
+                return;
+            }
+
+            if (data && data[0]) {
+                todos.unshift(data[0]); // 置顶
+                renderTodos();
+            }
+        }
+
+        async function toggleTodo(id) {
+            const todo = todos.find(t => t.id === id);
+            if (!todo) return;
+
+            const newStatus = !todo.completed;
+
+            const { error } = await supabase
+                .from('todo')
+                .update({ completed: newStatus })
+                .eq('id', id);
+
+            if (error) {
+                console.error('更新失败:', error);
+                return;
+            }
+
+            todo.completed = newStatus;
+            renderTodos();
+        }
+
+        async function deleteTodo(id) {
+            const { error } = await supabase
+                .from('todo')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                console.error('删除失败:', error);
+                return;
+            }
+
+            todos = todos.filter(t => t.id !== id);
+            renderTodos();
+        }
+
+        function renderTodos() {
+            const list = document.getElementById('todoList');
+            const totalEl = document.getElementById('totalCount');
+            const pendingEl = document.getElementById('pendingCount');
+            const completedEl = document.getElementById('completedCount');
+
+            // 更新统计
+            const total = todos.length;
+            const completed = todos.filter(t => t.completed).length;
+            const pending = total - completed;
+
+            totalEl.textContent = total;
+            pendingEl.textContent = pending;
+            completedEl.textContent = completed;
+
+            if (todos.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <div>暂无待办事项</div>
+                        <div style="font-size: 12px; margin-top: 8px;">添加你的第一个任务吧！</div>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = todos.map(todo => `
+                <div class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+                    <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo('${todo.id}')">
+                        ${todo.completed ? '✓' : ''}
+                    </div>
+                    <div class="todo-content">
+                        <div class="todo-text">${escapeHtml(todo.title)}</div>
+                        ${todo.tag ? `<span class="todo-tag tag-${todo.tag}">${getTagName(todo.tag)}</span>` : ''}
+                    </div>
+                    <button class="delete-btn" onclick="deleteTodo('${todo.id}')">删除</button>
+                </div>
+            `).join('');
+        }
+
+        function getTagName(tag) {
+            const names = {
+                'intern': '实习准备',
+                'driving': '学车',
+                'homework': '课堂作业',
+                'other': '其他'
+            };
+            return names[tag] || '其他';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function addTodoFromInput() {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 智能识别标签
+            let tag = 'other';
+            if (text.includes('实习') || text.includes('产品') || text.includes('AI')) tag = 'intern';
+            else if (text.includes('车') || text.includes('科二') || text.includes('科三') || text.includes('练车')) tag = 'driving';
+            else if (text.includes('作业') || text.includes('UI') || text.includes('设计') || text.includes('app')) tag = 'homework';
+
+            addTodo(text, tag);
+            input.value = '';
+        }
+
+        // 回车添加
+        document.getElementById('todoInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTodoFromInput();
+        });
+
+        // 实时订阅
+        function setupRealtime() {
+            supabase
+                .channel('todos-channel')
+                .on('postgres_changes', 
+                    { event: '*', schema: 'public', table: 'todo', filter: `user_id=eq.${userId}` },
+                    (payload) => {
+                        console.log('数据变化:', payload);
+                        loadTodos();
+                    }
+                )
+                .subscribe();
+        }
+
+        // ==================== 日历和课程功能 ====================
+        function getCurrentWeekData() {
+            const weekNum = getWeekNumber(today);
+            return scheduleData.find(s => s.week === weekNum) || scheduleData[0];
+        }
+
+        function renderTodayInfo() {
+            const dateStr = formatDate(today);
+            const dayName = getDayName(today);
+            const weekNum = getWeekNumber(today);
+            const weekData = getCurrentWeekData();
+
+            document.getElementById('todayTitle').textContent = `今日概览（${today.getMonth()+1}月${today.getDate()}日 ${dayName}）`;
+            document.getElementById('currentWeek').textContent = `第${weekNum}周`;
+            document.getElementById('currentModule').textContent = weekData.module;
+            document.getElementById('weekDisplay').textContent = `第${weekNum}周`;
+
+            // 查找今日是否有课
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const day = today.getDate().toString().padStart(2, '0');
+            const fullDateStr = `${month}-${day}`;
+
+            const todayCourses = [];
+            scheduleData.forEach(week => {
+                week.dates.forEach((d, i) => {
+                    if (d === fullDateStr) {
+                        todayCourses.push({
+                            name: week.name,
+                            teacher: week.teacher,
+                            time: '08:30-16:50',
+                            location: week.location,
+                            day: week.days[i]
+                        });
+                    }
+                });
+            });
+
+            const scheduleEl = document.getElementById('todaySchedule');
+            if (todayCourses.length > 0) {
+                scheduleEl.innerHTML = todayCourses.map(c => `
+                    <div class="schedule-item">
+                        <div>
+                            <div class="course-name">${c.name}</div>
+                            <div class="course-time">⏰ ${c.time}</div>
+                            <span class="course-location">📍 ${c.location}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600; color: #667eea;">${c.day}</div>
+                            <div style="font-size: 13px; color: #666; margin-top: 4px;">${c.teacher}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // 添加空闲时间提示
+                scheduleEl.innerHTML += `
+                    <div class="free-time">
+                        <strong>💡 空闲时段建议：</strong><br>
+                        早间 08:00-08:30：可背单词/看产品文章<br>
+                        晚间 16:50-22:00：${getEveningSuggestion()}
+                    </div>
+                `;
+            } else {
+                scheduleEl.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: #666;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">🌟</div>
+                        <div>今日无课，自由安排！</div>
+                        <div style="font-size: 13px; margin-top: 8px; color: #999;">建议：${getFreeDaySuggestion()}</div>
+                    </div>
+                `;
+            }
+
+            // 生成建议
+            renderRecommendations(todayCourses.length > 0, weekData);
+        }
+
+        function getEveningSuggestion() {
+            const weekNum = getWeekNumber(today);
+            if (weekNum <= 3) {
+                return "UI设计作业（适老化App调研/原型）或 学车理论复习";
+            } else if (weekNum <= 6) {
+                return "专业考察报告整理 或 学车练车";
+            } else if (weekNum <= 10) {
+                return "AI产品经理实习准备（竞品分析/产品文档）";
+            } else {
+                return "交互设计作业 或 实习面试准备";
+            }
+        }
+
+        function getFreeDaySuggestion() {
+            const weekNum = getWeekNumber(today);
+            const dayNum = today.getDay();
+
+            if (dayNum === 6 || dayNum === 0) {
+                return "周末整块时间：适合练车（科二/科三）或 集中完成大作业";
+            }
+            if (weekNum <= 3) return "UI设计迭代：用户调研、原型制作、视觉设计";
+            if (weekNum <= 6) return "考察资料整理 + 学车";
+            if (weekNum <= 10) return "实习准备：产品分析、简历优化、项目复盘";
+            return "品牌形象设计作业 + 实习面试模拟";
+        }
+
+        function renderRecommendations(hasClass, weekData) {
+            const list = document.getElementById('recommendationList');
+            const weekNum = getWeekNumber(today);
+            const suggestions = [];
+
+            // 根据周数给出具体建议
+            if (weekNum <= 3) {
+                suggestions.push("UI设计作业：完成适老化代际交流App的用户画像和痛点分析");
+                suggestions.push("产品经理实习：整理英语读书App的AI功能方案文档");
+                suggestions.push("学车：科目二倒车入库练习（利用晚间或周末）");
+            } else if (weekNum <= 6) {
+                suggestions.push("专业考察：整理考察笔记，准备拓展研究报告");
+                suggestions.push("学车：科目二五项连练，准备约考");
+                suggestions.push("实习准备：完成跑酷游戏竞品分析报告");
+            } else if (weekNum <= 10) {
+                suggestions.push("实习冲刺：优化产品方案文档，量化项目成果（留存率/满意度数据）");
+                suggestions.push("学车：科目三道路练习（利用无课日白天）");
+                suggestions.push("作业：考察拓展研究PPT制作");
+            } else {
+                suggestions.push("品牌形象设计：完成互联网+品牌视觉识别系统");
+                suggestions.push("实习准备：模拟面试，准备项目复盘故事");
+                suggestions.push("学车：科目四理论刷题，准备拿证");
+            }
+
+            if (hasClass) {
+                suggestions.unshift(`今日有专业课（${weekData.module}），课前30分钟可复习昨日内容`);
+            }
+
+            list.innerHTML = suggestions.map(s => `<li>${s}</li>`).join('');
+        }
+
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+
+            // 表头
+            let html = weekDays.map(d => `<div class="calendar-header">${d}</div>`).join('');
+
+            // 计算当前显示周的日期
+            const currentWeekNum = getWeekNumber(today) + currentWeekOffset;
+            const weekStart = new Date(semesterStartDate);
+            weekStart.setDate(weekStart.getDate() + (currentWeekNum - 1) * 7);
+
+            // 生成7天
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(weekStart);
+                date.setDate(weekStart.getDate() + i);
+
+                const dateStr = formatDate(date);
+                const monthDay = `${date.getMonth()+1}/${date.getDate()}`;
+                const isToday = date.toDateString() === today.toDateString();
+
+                // 检查是否有课
+                let hasClass = false;
+                scheduleData.forEach(week => {
+                    if (week.dates.includes(dateStr)) hasClass = true;
+                });
+
+                html += `
+                    <div class="calendar-day ${isToday ? 'today' : ''} ${hasClass ? 'has-class' : ''}" 
+                         onclick="selectDate('${dateStr}')">
+                        <div style="font-weight: ${isToday ? '700' : '400'};">${monthDay}</div>
+                    </div>
+                `;
+            }
+
+            calendar.innerHTML = html;
+        }
+
+        function changeWeek(delta) {
+            currentWeekOffset += delta;
+            if (currentWeekOffset < -getWeekNumber(today) + 1) currentWeekOffset = -getWeekNumber(today) + 1;
+            if (currentWeekOffset > totalWeeks - getWeekNumber(today)) currentWeekOffset = totalWeeks - getWeekNumber(today);
+            renderCalendar();
+        }
+
+        function selectDate(dateStr) {
+            // 可以在这里添加点击日期的逻辑，比如显示那天的详细安排
+            console.log('选择日期:', dateStr);
+        }
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTodayInfo();
+            renderCalendar();
+            loadTodos();
+            setupRealtime();
+
+            console.log('每日成长打卡系统已启动');
+            console.log('用户ID:', userId);
+            console.log('提示：在不同设备上打开此页面，使用相同的用户ID即可同步数据');
+            console.log('如需固定同步码，可在控制台执行：localStorage.setItem("todo_user_id", "你的固定ID")');
+        });
+    </script>
+</body>
+</html>
