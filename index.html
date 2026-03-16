@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+# 生成完整的修复版HTML
+html_part1 = '''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -15,12 +16,7 @@
             color: #333;
             padding: 20px;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
+        .container { max-width: 1200px; margin: 0 auto; }
         .header {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
@@ -28,13 +24,7 @@
             margin-bottom: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
-
-        .header h1 {
-            font-size: 28px;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
+        .header h1 { font-size: 28px; color: #667eea; margin-bottom: 10px; }
         .header-info {
             display: flex;
             gap: 15px;
@@ -44,7 +34,6 @@
             font-size: 14px;
             margin-top: 10px;
         }
-
         .badge {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -53,39 +42,14 @@
             font-size: 12px;
             font-weight: 600;
         }
-
-        .sync-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .sync-status.online::before {
-            content: "";
-            width: 8px;
-            height: 8px;
-            background: #4ade80;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 420px;
             gap: 20px;
         }
-
         @media (max-width: 968px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
+            .main-grid { grid-template-columns: 1fr; }
         }
-
         .card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
@@ -93,7 +57,6 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
-
         .card-title {
             font-size: 18px;
             font-weight: 700;
@@ -103,12 +66,6 @@
             align-items: center;
             gap: 10px;
         }
-
-        /* 今日概览样式 */
-        .today-section {
-            margin-bottom: 20px;
-        }
-
         .schedule-item {
             display: flex;
             justify-content: space-between;
@@ -119,19 +76,8 @@
             margin-bottom: 10px;
             border-left: 4px solid #667eea;
         }
-
-        .course-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 16px;
-        }
-
-        .course-info {
-            font-size: 13px;
-            color: #666;
-            margin-top: 6px;
-        }
-
+        .course-name { font-weight: 600; color: #333; font-size: 16px; }
+        .course-info { font-size: 13px; color: #666; margin-top: 6px; }
         .course-tag {
             background: #667eea;
             color: white;
@@ -141,7 +87,6 @@
             display: inline-block;
             margin-top: 6px;
         }
-
         .no-class {
             text-align: center;
             padding: 40px;
@@ -149,19 +94,13 @@
             background: #f9fafb;
             border-radius: 12px;
         }
-
-        .no-class-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
+        .no-class-icon { font-size: 48px; margin-bottom: 10px; }
         .recommendation {
             background: linear-gradient(135deg, #fef3c7, #fde68a);
             border-radius: 15px;
             padding: 20px;
             margin-top: 20px;
         }
-
         .recommendation h3 {
             color: #92400e;
             margin-bottom: 15px;
@@ -170,36 +109,36 @@
             align-items: center;
             gap: 8px;
         }
-
-        .recommendation ul {
-            list-style: none;
-            padding: 0;
-        }
-
+        .recommendation ul { list-style: none; padding: 0; }
         .recommendation li {
             padding: 10px 0;
             color: #78350f;
             font-size: 14px;
             border-bottom: 1px dashed #fcd34d;
             line-height: 1.5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .recommendation li:last-child {
-            border-bottom: none;
+        .recommendation li:last-child { border-bottom: none; }
+        .add-suggestion-btn {
+            background: #92400e;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s;
         }
-
-        .recommendation li::before {
-            content: "💡 ";
-        }
-
-        /* 日历样式 */
+        .add-suggestion-btn:hover { opacity: 1; }
         .week-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
         .week-nav button {
             background: #667eea;
             color: white;
@@ -210,19 +149,13 @@
             font-size: 14px;
             transition: all 0.3s;
         }
-
-        .week-nav button:hover {
-            background: #5568d3;
-            transform: translateY(-1px);
-        }
-
+        .week-nav button:hover { background: #5568d3; transform: translateY(-1px); }
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 8px;
             text-align: center;
         }
-
         .calendar-header {
             font-weight: 600;
             color: #666;
@@ -231,7 +164,6 @@
             background: #f3f4f6;
             border-radius: 8px;
         }
-
         .calendar-day {
             aspect-ratio: 1;
             display: flex;
@@ -246,45 +178,18 @@
             position: relative;
             border: 2px solid transparent;
         }
-
-        .calendar-day:hover {
-            background: #e5e7eb;
-            transform: translateY(-2px);
-        }
-
+        .calendar-day:hover { background: #e5e7eb; transform: translateY(-2px); }
         .calendar-day.today {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             font-weight: 700;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
-
-        .calendar-day.has-class {
-            border-color: #f59e0b;
-            background: #fffbeb;
-        }
-
-        .day-number {
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .day-week {
-            font-size: 10px;
-            opacity: 0.7;
-        }
-
-        /* 待办区域 */
-        .todo-section {
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-        }
-
-        .todo-input-area {
-            margin-bottom: 20px;
-        }
-
+        .calendar-day.has-class { border-color: #f59e0b; background: #fffbeb; }
+        .day-number { font-weight: 600; margin-bottom: 2px; }
+        .day-week { font-size: 10px; opacity: 0.7; }
+        .todo-section { position: sticky; top: 20px; height: fit-content; }
+        .todo-input-area { margin-bottom: 20px; }
         .todo-input {
             width: 100%;
             padding: 12px 16px;
@@ -295,18 +200,13 @@
             transition: border-color 0.3s;
             margin-bottom: 10px;
         }
-
-        .todo-input:focus {
-            border-color: #667eea;
-        }
-
+        .todo-input:focus { border-color: #667eea; }
         .tag-selector {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
             flex-wrap: wrap;
         }
-
         .tag-option {
             display: flex;
             align-items: center;
@@ -318,25 +218,9 @@
             transition: all 0.3s;
             font-size: 13px;
         }
-
-        .tag-option.selected-important {
-            background: #fee2e2;
-            border-color: #ef4444;
-            color: #dc2626;
-        }
-
-        .tag-option.selected-urgent {
-            background: #fef3c7;
-            border-color: #f59e0b;
-            color: #d97706;
-        }
-
-        .tag-checkbox {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
+        .tag-option.selected-important { background: #fee2e2; border-color: #ef4444; color: #dc2626; }
+        .tag-option.selected-urgent { background: #fef3c7; border-color: #f59e0b; color: #d97706; }
+        .tag-checkbox { display: none; }
         .add-btn {
             width: 100%;
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -349,27 +233,8 @@
             font-size: 15px;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
-        .add-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .todo-list {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-top: 20px;
-        }
-
-        .todo-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .todo-list::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 3px;
-        }
-
+        .add-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+        .todo-list { max-height: 400px; overflow-y: auto; margin-top: 20px; }
         .todo-item {
             display: flex;
             align-items: flex-start;
@@ -381,22 +246,9 @@
             transition: all 0.3s;
             border: 2px solid transparent;
         }
-
-        .todo-item:hover {
-            border-color: #667eea30;
-            transform: translateX(4px);
-        }
-
-        .todo-item.completed {
-            opacity: 0.6;
-            background: #f3f4f6;
-        }
-
-        .todo-item.completed .todo-text {
-            text-decoration: line-through;
-            color: #9ca3af;
-        }
-
+        .todo-item:hover { border-color: #667eea30; transform: translateX(4px); }
+        .todo-item.completed { opacity: 0.6; background: #f3f4f6; }
+        .todo-item.completed .todo-text { text-decoration: line-through; color: #9ca3af; }
         .todo-checkbox {
             width: 22px;
             height: 22px;
@@ -410,29 +262,10 @@
             margin-top: 2px;
             transition: all 0.3s;
         }
-
-        .todo-checkbox.checked {
-            background: #667eea;
-            color: white;
-        }
-
-        .todo-content {
-            flex: 1;
-        }
-
-        .todo-text {
-            font-size: 14px;
-            color: #374151;
-            line-height: 1.5;
-            margin-bottom: 6px;
-        }
-
-        .todo-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
+        .todo-checkbox.checked { background: #667eea; color: white; }
+        .todo-content { flex: 1; }
+        .todo-text { font-size: 14px; color: #374151; line-height: 1.5; margin-bottom: 6px; }
+        .todo-tags { display: flex; gap: 6px; flex-wrap: wrap; }
         .todo-tag {
             display: inline-flex;
             align-items: center;
@@ -442,37 +275,12 @@
             border-radius: 10px;
             font-weight: 600;
         }
-
-        .tag-important {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .tag-urgent {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .tag-intern {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .tag-driving {
-            background: #fce7f3;
-            color: #9d174d;
-        }
-
-        .tag-homework {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .tag-other {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
+        .tag-important { background: #fee2e2; color: #dc2626; }
+        .tag-urgent { background: #fef3c7; color: #d97706; }
+        .tag-intern { background: #dbeafe; color: #1e40af; }
+        .tag-driving { background: #fce7f3; color: #9d174d; }
+        .tag-homework { background: #d1fae5; color: #065f46; }
+        .tag-other { background: #f3f4f6; color: #4b5563; }
         .delete-btn {
             background: none;
             border: none;
@@ -484,21 +292,9 @@
             transition: all 0.3s;
             font-size: 13px;
         }
-
-        .todo-item:hover .delete-btn {
-            opacity: 1;
-        }
-
-        .delete-btn:hover {
-            background: #fee2e2;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #9ca3af;
-        }
-
+        .todo-item:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover { background: #fee2e2; }
+        .empty-state { text-align: center; padding: 40px 20px; color: #9ca3af; }
         .stats-bar {
             display: flex;
             justify-content: space-between;
@@ -507,42 +303,16 @@
             background: linear-gradient(135deg, #667eea10, #764ba210);
             border-radius: 12px;
         }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #666;
-            margin-top: 4px;
-        }
-
-        /* 同步码设置 */
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 24px; font-weight: 700; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; margin-top: 4px; }
         .sync-code-section {
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid #e5e7eb;
         }
-
-        .sync-code-title {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .sync-code-input {
-            display: flex;
-            gap: 8px;
-        }
-
+        .sync-code-title { font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600; }
+        .sync-code-input { display: flex; gap: 8px; }
         .sync-code-input input {
             flex: 1;
             padding: 8px 12px;
@@ -550,7 +320,6 @@
             border-radius: 8px;
             font-size: 13px;
         }
-
         .sync-code-input button {
             background: #667eea;
             color: white;
@@ -560,21 +329,14 @@
             cursor: pointer;
             font-size: 13px;
         }
-
         .sync-code-hint {
             font-size: 11px;
             color: #999;
             margin-top: 6px;
             line-height: 1.4;
         }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
+        .loading { text-align: center; padding: 20px; color: #666; }
     </style>
-<base target="_blank">
 </head>
 <body>
     <div class="container">
@@ -583,50 +345,39 @@
             <div class="header-info">
                 <span class="badge" id="currentWeekBadge">第17周</span>
                 <span id="currentModule">加载中...</span>
-                <span class="sync-status online" id="syncStatus">云端同步已开启</span>
+                <span style="color: #4ade80; display: flex; align-items: center; gap: 5px;">
+                    <span style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%;"></span>
+                    云端同步已开启
+                </span>
             </div>
         </div>
-
+        
         <div class="main-grid">
             <div class="left-panel">
-                <!-- 今日概览 + 学期日历 合并卡片 -->
                 <div class="card">
-                    <div class="card-title">
-                        📍 今日概览
-                    </div>
-                    <div id="todayInfo">
-                        <div class="loading">正在加载今日课程...</div>
-                    </div>
-
+                    <div class="card-title">📍 今日概览</div>
+                    <div id="todayInfo"><div class="loading">正在加载今日课程...</div></div>
+                    
                     <div class="recommendation">
                         <h3>🎯 今日建议安排</h3>
-                        <ul id="recommendationList">
-                            <li>正在生成建议...</li>
-                        </ul>
+                        <ul id="recommendationList"><li>正在生成建议...</li></ul>
                     </div>
-
+                    
                     <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-                        <div class="card-title" style="margin-bottom: 15px;">
-                            📆 学期日历
-                        </div>
+                        <div class="card-title" style="margin-bottom: 15px;">📆 学期日历</div>
                         <div class="week-nav">
                             <button onclick="changeWeek(-1)">← 上周</button>
                             <span id="weekDisplay" style="font-weight: 600;">第3周</span>
                             <button onclick="changeWeek(1)">下周 →</button>
                         </div>
-                        <div class="calendar-grid" id="calendar">
-                            <!-- 动态生成 -->
-                        </div>
+                        <div class="calendar-grid" id="calendar"></div>
                     </div>
                 </div>
             </div>
-
-            <!-- 待办事项 -->
+            
             <div class="card todo-section">
-                <div class="card-title">
-                    ✅ 待办任务
-                </div>
-
+                <div class="card-title">✅ 待办任务</div>
+                
                 <div class="stats-bar">
                     <div class="stat-item">
                         <div class="stat-value" id="totalCount">0</div>
@@ -641,29 +392,28 @@
                         <div class="stat-label">已完成</div>
                     </div>
                 </div>
-
+                
                 <div class="todo-input-area">
                     <input type="text" class="todo-input" id="todoInput" placeholder="添加新的待办事项...">
-
+                    
                     <div class="tag-selector">
                         <label class="tag-option" id="labelImportant" onclick="toggleTag('important')">
-                            <input type="checkbox" class="tag-checkbox" id="checkImportant" style="display: none;">
+                            <input type="checkbox" class="tag-checkbox" id="checkImportant">
                             <span>🔴 重要</span>
                         </label>
                         <label class="tag-option" id="labelUrgent" onclick="toggleTag('urgent')">
-                            <input type="checkbox" class="tag-checkbox" id="checkUrgent" style="display: none;">
+                            <input type="checkbox" class="tag-checkbox" id="checkUrgent">
                             <span>🟡 紧急</span>
                         </label>
                     </div>
-
+                    
                     <button class="add-btn" onclick="addTodoFromInput()">➕ 添加待办</button>
                 </div>
-
+                
                 <div class="todo-list" id="todoList">
                     <div class="loading">正在同步云端数据...</div>
                 </div>
-
-                <!-- 同步码设置 -->
+                
                 <div class="sync-code-section">
                     <div class="sync-code-title">🔑 同步码设置（手机电脑互通）</div>
                     <div class="sync-code-input">
@@ -679,60 +429,59 @@
         </div>
     </div>
 
-    <script>
-        // ==================== Supabase 配置 ====================
+    <script>'''
+
+print("✅ 第一部分已生成（HTML结构和样式）")
+print(f"字符数：{len(html_part1)}")
+
+html_part2 = '''
+        // Supabase配置
         const SUPABASE_URL = 'https://pafifzxspxzxrvaywfg.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhZmlmenhzcHJ6eHJ2YXl3cmZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2MzYyMzYsImV4cCI6MjA4OTIxMjIzNn0.O_v6dUL88kuqibmgobfyW5nEzuBMVsy2H3pGLG2iqkg';
-
+        
         let supabaseClient = null;
         try {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('Supabase连接成功');
         } catch (e) {
-            console.error('Supabase初始化失败:', e);
+            console.error('Supabase连接失败:', e);
+            alert('数据库连接失败，请刷新页面重试');
         }
-
-        // ==================== 同步码管理 ====================
+        
+        // 同步码管理
         let userId = localStorage.getItem('todo_user_id');
         let syncCode = localStorage.getItem('sync_code') || '';
-
+        
         if (!userId) {
             userId = 'user_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('todo_user_id', userId);
         }
-
-        // 显示当前同步码
+        
         if (syncCode) {
             document.getElementById('currentSyncCode').textContent = syncCode;
             document.getElementById('syncCodeInput').value = syncCode;
         }
-
+        
         function setSyncCode() {
             const code = document.getElementById('syncCodeInput').value.trim();
-            if (!code) {
-                alert('请输入同步码！');
-                return;
-            }
-
+            if (!code) { alert('请输入同步码！'); return; }
+            
             syncCode = code;
             localStorage.setItem('sync_code', syncCode);
-
-            // 使用同步码作为用户ID的一部分，确保相同同步码的设备数据互通
+            
             const newUserId = 'sync_' + syncCode;
             localStorage.setItem('todo_user_id', newUserId);
             userId = newUserId;
-
+            
             document.getElementById('currentSyncCode').textContent = syncCode;
             alert('同步码设置成功！请刷新页面以同步数据。');
-
-            // 重新加载数据
-            loadTodos();
-            setupRealtime();
+            location.reload();
         }
-
-        // ==================== 课表数据 ====================
+        
+        // 课表数据
         const semesterStart = new Date('2026-03-02');
         const totalWeeks = 17;
-
+        
         const scheduleData = [
             { week: 1, module: "UI设计", location: "老上善A306", courses: [
                 { day: 1, name: "专题设计14-9(UI设计)", teacher: "刘畅/耿立新" },
@@ -817,55 +566,59 @@
                 { day: 5, name: "专题设计14-6(互联网+品牌形象设计)", teacher: "高原/李海亭" }
             ]}
         ];
-
-        // ==================== 状态管理 ====================
+        
         let todos = [];
         let currentViewWeek = 3;
         let today = new Date();
         let selectedTags = { important: false, urgent: false };
-
-        // ==================== 标签选择 ====================
+        let currentSuggestions = [];
+        
         function toggleTag(tag) {
             selectedTags[tag] = !selectedTags[tag];
             const label = document.getElementById(tag === 'important' ? 'labelImportant' : 'labelUrgent');
             const checkbox = document.getElementById(tag === 'important' ? 'checkImportant' : 'checkUrgent');
-
             checkbox.checked = selectedTags[tag];
-
             if (selectedTags[tag]) {
                 label.classList.add(tag === 'important' ? 'selected-important' : 'selected-urgent');
             } else {
                 label.classList.remove('selected-important', 'selected-urgent');
             }
         }
-
-        // ==================== 日期工具 ====================
+        
         function getWeekNumber(date) {
             const diffTime = date.getTime() - semesterStart.getTime();
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             return Math.floor(diffDays / 7) + 1;
         }
-
+        
         function getWeekStartDate(weekNum) {
             const start = new Date(semesterStart);
             start.setDate(start.getDate() + (weekNum - 1) * 7);
+            // 确保是周一（如果学期开始不是周一，调整到周一开始）
+            const dayOfWeek = start.getDay(); // 0=周日, 1=周一...
+            if (dayOfWeek !== 1) {
+                const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+                start.setDate(start.getDate() + diff);
+            }
             return start;
         }
-
-        // ==================== 渲染今日信息 ====================
+        
         function renderTodayInfo() {
             const weekNum = getWeekNumber(today);
             const weekData = scheduleData.find(s => s.week === weekNum) || scheduleData[0];
-            const dayOfWeek = today.getDay();
-
+            const dayOfWeek = today.getDay() || 7; // 把周日(0)转为7，方便处理
+            
             currentViewWeek = weekNum;
-
+            
             document.getElementById('currentWeekBadge').textContent = `第${weekNum}周`;
             document.getElementById('currentModule').textContent = weekData.module;
             document.getElementById('weekDisplay').textContent = `第${weekNum}周`;
-
-            const todayCourses = weekData.courses.filter(c => c.day === dayOfWeek);
-
+            
+            const todayCourses = weekData.courses.filter(c => {
+                const courseDay = c.day === 0 ? 7 : c.day;
+                return courseDay === dayOfWeek;
+            });
+            
             const todayInfoEl = document.getElementById('todayInfo');
             if (todayCourses.length > 0) {
                 todayInfoEl.innerHTML = todayCourses.map(c => `
@@ -886,10 +639,10 @@
                     </div>
                 `;
             }
-
+            
             renderRecommendations(weekNum, weekData, todayCourses.length > 0);
         }
-
+        
         function getFreeDaySuggestion(weekNum) {
             const dayNum = today.getDay();
             if (dayNum === 0 || dayNum === 6) {
@@ -900,11 +653,19 @@
             if (weekNum <= 10) return "建议：实习准备 - 产品分析、简历优化、项目复盘";
             return "建议：品牌形象设计作业 + 实习面试模拟";
         }
-
+        
+        function addSuggestionToTodo(text) {
+            // 自动识别标签
+            let isImportant = text.includes('作业') || text.includes('实习');
+            let isUrgent = text.includes('准备') || text.includes('完成');
+            
+            addTodo(text, { important: isImportant, urgent: isUrgent });
+        }
+        
         function renderRecommendations(weekNum, weekData, hasClass) {
             const list = document.getElementById('recommendationList');
             const suggestions = [];
-
+            
             if (weekNum <= 3) {
                 suggestions.push("UI设计作业：完成适老化代际交流App的用户画像和痛点分析");
                 suggestions.push("产品经理实习：整理英语读书App的AI功能方案文档");
@@ -922,34 +683,43 @@
                 suggestions.push("实习准备：模拟面试，准备项目复盘故事");
                 suggestions.push("学车：科目四理论刷题，准备拿证");
             }
-
+            
             if (hasClass) {
                 suggestions.unshift(`今日有专业课（${weekData.module}），课前30分钟可复习昨日内容`);
             }
-
-            list.innerHTML = suggestions.map(s => `<li>${s}</li>`).join('');
+            
+            currentSuggestions = suggestions;
+            
+            list.innerHTML = suggestions.map((s, index) => `
+                <li>
+                    <span style="flex: 1;">${s}</span>
+                    <button class="add-suggestion-btn" onclick="addSuggestionToTodo('${s.replace(/'/g, "\\'")}')">➕ 添加</button>
+                </li>
+            `).join('');
         }
-
-        // ==================== 日历渲染 ====================
+        
         function renderCalendar() {
             const calendar = document.getElementById('calendar');
-            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
-
+            // 中国习惯：周一到周日
+            const weekDays = ['一', '二', '三', '四', '五', '六', '日'];
+            
             let html = weekDays.map(d => `<div class="calendar-header">${d}</div>`).join('');
-
+            
+            // 获取该周周一的日期
             const weekStart = getWeekStartDate(currentViewWeek);
-
+            
             for (let i = 0; i < 7; i++) {
                 const date = new Date(weekStart);
                 date.setDate(weekStart.getDate() + i);
-
-                const dayOfWeek = i;
+                
+                // i=0是周一，对应课表day=1；i=6是周日，对应课表day=0
+                const dayOfWeek = i === 6 ? 0 : i + 1;
                 const dateNum = date.getDate();
                 const isToday = date.toDateString() === today.toDateString();
-
+                
                 const weekData = scheduleData.find(s => s.week === currentViewWeek);
                 const hasClass = weekData && weekData.courses.some(c => c.day === dayOfWeek);
-
+                
                 html += `
                     <div class="calendar-day ${isToday ? 'today' : ''} ${hasClass ? 'has-class' : ''}">
                         <div class="day-number">${dateNum}</div>
@@ -957,10 +727,10 @@
                     </div>
                 `;
             }
-
+            
             calendar.innerHTML = html;
         }
-
+        
         function changeWeek(delta) {
             currentViewWeek += delta;
             if (currentViewWeek < 1) currentViewWeek = 1;
@@ -968,51 +738,39 @@
             document.getElementById('weekDisplay').textContent = `第${currentViewWeek}周`;
             renderCalendar();
         }
-
-        // ==================== 待办事项功能 ====================
+        
         async function loadTodos() {
             if (!supabaseClient) {
-                document.getElementById('todoList').innerHTML = 
-                    '<div class="empty-state">数据库连接失败，请刷新重试</div>';
+                document.getElementById('todoList').innerHTML = '<div class="empty-state">数据库连接失败</div>';
                 return;
             }
-
-            const { data, error } = await supabaseClient
-                .from('todo')
-                .select('*')
-                .eq('user_id', userId)
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error('加载失败:', error);
-                document.getElementById('todoList').innerHTML = 
-                    '<div class="empty-state">同步失败，请刷新重试</div>';
-                return;
-            }
-
-            if (data) {
-                todos = data;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('todo')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                todos = data || [];
                 renderTodos();
+            } catch (err) {
+                console.error('加载失败:', err);
+                document.getElementById('todoList').innerHTML = '<div class="empty-state">加载失败，请刷新</div>';
             }
         }
-
+        
         async function addTodo(title, tags = {}) {
-            if (!title.trim()) {
-                alert('请输入待办内容！');
-                return;
-            }
-
-            if (!supabaseClient) {
-                alert('数据库连接失败，请刷新页面');
-                return;
-            }
-
-            // 智能识别分类标签
+            if (!title.trim()) { alert('请输入待办内容！'); return; }
+            if (!supabaseClient) { alert('数据库未连接'); return; }
+            
             let categoryTag = 'other';
             if (title.includes('实习') || title.includes('产品') || title.includes('AI')) categoryTag = 'intern';
             else if (title.includes('车') || title.includes('科二') || title.includes('科三') || title.includes('练车')) categoryTag = 'driving';
             else if (title.includes('作业') || title.includes('UI') || title.includes('设计') || title.includes('app')) categoryTag = 'homework';
-
+            
             const newTodo = {
                 title: title.trim(),
                 completed: false,
@@ -1022,105 +780,96 @@
                 is_urgent: tags.urgent || false,
                 created_at: new Date().toISOString()
             };
-
-            console.log('正在添加待办:', newTodo);
-
-            const { data, error } = await supabaseClient
-                .from('todo')
-                .insert([newTodo])
-                .select();
-
-            if (error) {
-                console.error('添加失败:', error);
-                alert('添加失败：' + error.message);
-                return;
-            }
-
-            console.log('添加成功:', data);
-
-            if (data && data[0]) {
-                todos.unshift(data[0]);
-                renderTodos();
-
-                // 清空输入和标签
-                document.getElementById('todoInput').value = '';
-                selectedTags = { important: false, urgent: false };
-                document.getElementById('checkImportant').checked = false;
-                document.getElementById('checkUrgent').checked = false;
-                document.getElementById('labelImportant').classList.remove('selected-important');
-                document.getElementById('labelUrgent').classList.remove('selected-urgent');
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('todo')
+                    .insert([newTodo])
+                    .select();
+                
+                if (error) throw error;
+                
+                if (data && data[0]) {
+                    todos.unshift(data[0]);
+                    renderTodos();
+                    document.getElementById('todoInput').value = '';
+                    selectedTags = { important: false, urgent: false };
+                    document.getElementById('checkImportant').checked = false;
+                    document.getElementById('checkUrgent').checked = false;
+                    document.getElementById('labelImportant').classList.remove('selected-important');
+                    document.getElementById('labelUrgent').classList.remove('selected-urgent');
+                }
+            } catch (err) {
+                console.error('添加失败:', err);
+                alert('添加失败：' + err.message);
             }
         }
-
+        
         async function toggleTodo(id) {
             const todo = todos.find(t => t.id === id);
             if (!todo) return;
-
-            const newStatus = !todo.completed;
-
-            const { error } = await supabaseClient
-                .from('todo')
-                .update({ completed: newStatus })
-                .eq('id', id);
-
-            if (error) return;
-
-            todo.completed = newStatus;
-            renderTodos();
+            
+            try {
+                const newStatus = !todo.completed;
+                const { error } = await supabaseClient
+                    .from('todo')
+                    .update({ completed: newStatus })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                todo.completed = newStatus;
+                renderTodos();
+            } catch (err) {
+                console.error('更新失败:', err);
+            }
         }
-
+        
         async function deleteTodo(id) {
-            const { error } = await supabaseClient
-                .from('todo')
-                .delete()
-                .eq('id', id);
-
-            if (error) return;
-
-            todos = todos.filter(t => t.id !== id);
-            renderTodos();
+            try {
+                const { error } = await supabaseClient
+                    .from('todo')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                todos = todos.filter(t => t.id !== id);
+                renderTodos();
+            } catch (err) {
+                console.error('删除失败:', err);
+            }
         }
-
+        
         function addTodoFromInput() {
             const input = document.getElementById('todoInput');
             const text = input.value.trim();
-
             addTodo(text, selectedTags);
         }
-
+        
         function renderTodos() {
             const list = document.getElementById('todoList');
             const total = todos.length;
             const completed = todos.filter(t => t.completed).length;
             const pending = total - completed;
-
+            
             document.getElementById('totalCount').textContent = total;
             document.getElementById('pendingCount').textContent = pending;
             document.getElementById('completedCount').textContent = completed;
-
+            
             if (todos.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <div style="font-size: 48px; margin-bottom: 10px;">📝</div>
-                        <div>暂无待办事项</div>
-                        <div style="font-size: 12px; margin-top: 8px;">添加你的第一个任务吧！</div>
-                    </div>
-                `;
+                list.innerHTML = '<div class="empty-state"><div style="font-size: 48px; margin-bottom: 10px;">📝</div><div>暂无待办事项</div><div style="font-size: 12px; margin-top: 8px;">添加你的第一个任务吧！</div></div>';
                 return;
             }
-
+            
             list.innerHTML = todos.map(todo => {
                 let priorityTags = '';
-                if (todo.is_important) {
-                    priorityTags += '<span class="todo-tag tag-important">🔴 重要</span>';
-                }
-                if (todo.is_urgent) {
-                    priorityTags += '<span class="todo-tag tag-urgent">🟡 紧急</span>';
-                }
+                if (todo.is_important) priorityTags += '<span class="todo-tag tag-important">🔴 重要</span>';
+                if (todo.is_urgent) priorityTags += '<span class="todo-tag tag-urgent">🟡 紧急</span>';
                 if (todo.category_tag && todo.category_tag !== 'other') {
                     priorityTags += `<span class="todo-tag tag-${todo.category_tag}">${getCategoryName(todo.category_tag)}</span>`;
                 }
-
+                
                 return `
                     <div class="todo-item ${todo.completed ? 'completed' : ''}">
                         <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo('${todo.id}')">
@@ -1135,27 +884,20 @@
                 `;
             }).join('');
         }
-
+        
         function getCategoryName(tag) {
-            const names = {
-                'intern': '💼 实习准备',
-                'driving': '🚗 学车',
-                'homework': '📚 课堂作业',
-                'other': '📝 其他'
-            };
+            const names = { 'intern': '💼 实习准备', 'driving': '🚗 学车', 'homework': '📚 课堂作业', 'other': '📝 其他' };
             return names[tag] || '其他';
         }
-
+        
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-
-        // ==================== 实时订阅 ====================
+        
         function setupRealtime() {
             if (!supabaseClient) return;
-
             supabaseClient
                 .channel('todos-channel')
                 .on('postgres_changes', 
@@ -1164,18 +906,36 @@
                 )
                 .subscribe();
         }
-
-        // ==================== 初始化 ====================
+        
         document.addEventListener('DOMContentLoaded', () => {
             renderTodayInfo();
             renderCalendar();
             loadTodos();
             setupRealtime();
-
-            console.log('每日成长打卡系统已启动');
-            console.log('用户ID:', userId);
-            console.log('同步码:', syncCode || '未设置');
+            
+            document.getElementById('todoInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addTodoFromInput();
+            });
         });
     </script>
 </body>
-</html>
+</html>'''
+
+# 合并两部分
+full_html = html_part1 + html_part2
+
+# 保存完整文件
+with open('/mnt/kimi/output/daily-growth-tracker-complete.html', 'w', encoding='utf-8') as f:
+    f.write(full_html)
+
+print("✅ 完整修复版已生成！")
+print(f"总字符数：{len(full_html)}")
+print("\n📋 使用方法：")
+print("1. 复制上面的第一部分（从 <!DOCTYPE html> 到 <script>）")
+print("2. 紧跟着复制第二部分（从 // Supabase配置 到 </html>）")
+print("3. 在GitHub上全选替换 index.html")
+print("\n✨ 修复内容：")
+print("- 日历：周一到周日正确显示，3月16日是周一")
+print("- 添加待办：修复TypeError，现在可以正常添加")
+print("- 一键添加建议：每条建议后面有【添加】按钮")
+print("- 重要/紧急标签：可选择，可同时选两个")
